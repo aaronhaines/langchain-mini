@@ -1,7 +1,7 @@
 import fs from "fs";
 import * as readline from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
-import { googleSearch, calc } from "./tools.mjs";
+import { googleShopping, calc } from "./tools.mjs";
 
 import {
   getAccounts,
@@ -20,10 +20,10 @@ const mergeTemplate = fs.readFileSync("merge.txt", "utf8");
 const tools = {
   search: {
     description:
-      "a search engine. useful for when you need to answer \
-      questions about current events. \
-      input should be a search query.",
-    execute: googleSearch,
+      "A shopping search engine. Useful for \
+      when you need to find prices for items. \
+      Input should be a search query.",
+    execute: googleShopping,
   },
   calculator: {
     description:
