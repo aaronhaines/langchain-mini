@@ -33,7 +33,7 @@ let balances = [
 const getAccounts = () => JSON.stringify(accounts);
 
 // Get the balance for a specific accopunt
-const getBalance = async (input) => {
+const getBalance = (input) => {
   let acc = JSON.parse(input);
   let accNum = acc?.account_number;
   // let accNum = question.match(/\d{8}/);
@@ -45,7 +45,7 @@ const getBalance = async (input) => {
 };
 
 // Transfer funds from source account to destination account
-const transferFundsBetweenAccounts = async (input) => {
+const transferFundsBetweenAccounts = (input) => {
   let transfer = JSON.parse(input);
   let sourceAccount = transfer?.source?.acc_num;
   let destinationAccount = transfer?.destination?.acc_num;

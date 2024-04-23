@@ -12,6 +12,10 @@ import {
 import env from "dotenv";
 env.config();
 
+// Get the command-line arguments
+const args = process.argv;
+const debug = args.length > 2 && args[2] == "debug";
+
 const rl = readline.createInterface({ input, output });
 const promptTemplate = fs.readFileSync("prompt.txt", "utf8");
 const mergeTemplate = fs.readFileSync("merge.txt", "utf8");
@@ -76,7 +80,6 @@ const completePrompt = async (prompt) =>
     .then((res) => res.json())
     .then((res) => res.choices[0].message.content)
     .then((res) => {
-      console.log("\x1b[91m" + prompt + "\x1b[0m");
       return res;
     });
 
@@ -92,9 +95,13 @@ const answerQuestion = async (question) => {
     )
     .replace("${tool-names}", Object.keys(tools).join(","));
 
+  if (debug) console.log("\x1b[91m" + prompt + "\x1b[0m");
+
   // allow the LLM to iterate until it finds a final answer
   while (true) {
     const response = await completePrompt(prompt);
+
+    if (debug) console.log("\x1b[32m" + response + "\x1b[0m");
 
     // add this to the prompt
     prompt += response;
@@ -106,9 +113,13 @@ const answerQuestion = async (question) => {
       // execute the action specified by the LLMs
       const actionInput = response.match(/Action Input: "?(.*)"?/)?.[1];
       const result = await tool.execute(actionInput);
+
+      if (debug)
+        console.log("\x1b[32m" + `Observation: ${result}\n` + "\x1b[0m");
+
       prompt += `Observation: ${result}\n`;
     } else {
-      return response.match(/Final Answer: (.*)/)?.[1];
+      return response.match(/Final Answer: (.*)/s)?.[1];
     }
   }
 };
